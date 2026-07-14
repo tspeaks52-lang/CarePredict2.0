@@ -1,8 +1,9 @@
 import streamlit as st
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 # ==========================================================
-# PAGE CONFIG
+# PAGE CONFIGURATION
 # ==========================================================
 
 st.set_page_config(
@@ -23,14 +24,34 @@ if "results" not in st.session_state:
     st.session_state.results = {}
 
 # ==========================================================
-# CARE PREDICT COLORS
+# COLORS
 # ==========================================================
 
-PRIMARY = "#105560"
-SECONDARY = "#77C9C1"
-BACKGROUND = "#F5F7FA"
+PRIMARY = "#0F5A63"
+PRIMARY_LIGHT = "#77C9C1"
+ACCENT = "#E9F7F6"
+
+BACKGROUND = "#F4F7FA"
+
+CARD = "#FFFFFF"
+
 TEXT = "#1F2937"
 
+BORDER = "#DCE5EA"
+
+GREEN = "#2E7D32"
+
+YELLOW = "#F9A825"
+
+RED = "#C62828"
+
+# ==========================================================
+# LOCAL TIME
+# ==========================================================
+
+LOCAL_TIME = datetime.now(
+    ZoneInfo("America/New_York")
+)
 # ==========================================================
 # CUSTOM CSS
 # ==========================================================
@@ -38,55 +59,210 @@ TEXT = "#1F2937"
 st.markdown(f"""
 <style>
 
+/* ===========================
+   MAIN APP
+=========================== */
+
 .stApp {{
     background-color: {BACKGROUND};
+    color: {TEXT};
 }}
 
+.main .block-container {{
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    max-width: 1200px;
+}}
+
+/* ===========================
+   SIDEBAR
+=========================== */
+
 section[data-testid="stSidebar"] {{
-    background: {PRIMARY};
+    background: linear-gradient(180deg, {PRIMARY} 0%, #0B4248 100%);
+    border-right: none;
 }}
 
 section[data-testid="stSidebar"] * {{
     color: white;
 }}
 
-.block-container {{
-    padding-top: 2rem;
+section[data-testid="stSidebar"] img {{
+    margin-bottom: 20px;
 }}
 
-.hero {{
-    background: {PRIMARY};
-    color: white;
-    padding: 45px;
-    border-radius: 18px;
-    text-align: center;
+hr {{
+    border-color: rgba(255,255,255,.20);
 }}
+
+/* ===========================
+   HERO CARD
+=========================== */
+
+.hero-card {{
+
+    background: linear-gradient(135deg, {PRIMARY} 0%, #16727D 100%);
+
+    color: white;
+
+    border-radius: 24px;
+
+    padding: 40px;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,.12);
+
+    margin-bottom: 30px;
+
+}}
+
+.hero-card h1 {{
+
+    font-size: 42px;
+
+    margin-bottom: 8px;
+
+}}
+
+.hero-card h3 {{
+
+    font-weight:400;
+
+    opacity:.95;
+
+}}
+
+.hero-card p {{
+
+    font-size:18px;
+
+    margin-top:20px;
+
+}}
+
+/* ===========================
+   WHITE CARDS
+=========================== */
+
+div[data-testid="stVerticalBlock"] div:has(> div[data-testid="stVerticalBlock"]) {{
+
+    border-radius:18px;
+
+}}
+
+[data-testid="stMetric"] {{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:18px;
+
+    border:1px solid {BORDER};
+
+    box-shadow:0 4px 12px rgba(0,0,0,.05);
+
+}}
+
+.stAlert {{
+
+    border-radius:15px;
+
+}}
+
+.stTextInput input,
+
+.stSelectbox div[data-baseweb="select"],
+
+.stMultiSelect div[data-baseweb="select"] {{
+
+    border-radius:12px;
+
+}}
+
+/* ===========================
+   BUTTONS
+=========================== */
+
+.stButton>button {{
+
+    background:{PRIMARY};
+
+    color:white;
+
+    border:none;
+
+    border-radius:14px;
+
+    height:54px;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    transition:.25s;
+
+}}
+
+.stButton>button:hover {{
+
+    background:{PRIMARY_LIGHT};
+
+    color:{PRIMARY};
+
+    transform:translateY(-2px);
+
+}}
+
+/* ===========================
+   RECOMMENDATION CARD
+=========================== */
+
+.result-card {{
+
+    border-radius:22px;
+
+    padding:35px;
+
+    color:white;
+
+    text-align:center;
+
+    box-shadow:0 12px 30px rgba(0,0,0,.15);
+
+}}
+
+.summary-card {{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:25px;
+
+    border:1px solid {BORDER};
+
+    box-shadow:0 4px 12px rgba(0,0,0,.05);
+
+}}
+
+/* ===========================
+   FOOTER
+=========================== */
 
 .footer {{
-    text-align: center;
-    color: gray;
-    margin-top: 40px;
-    font-size: 13px;
-}}
 
-.stButton > button {{
-    background: {SECONDARY};
-    color: {PRIMARY};
-    border: none;
-    border-radius: 10px;
-    font-weight: bold;
-    height: 50px;
-    width: 100%;
-}}
+    text-align:center;
 
-.stButton > button:hover {{
-    background: {PRIMARY};
-    color: white;
+    color:#6B7280;
+
+    font-size:13px;
+
+    margin-top:45px;
+
 }}
 
 </style>
 """, unsafe_allow_html=True)
-
 # ==========================================================
 # SIDEBAR
 # ==========================================================
@@ -96,7 +272,7 @@ st.sidebar.image(
     use_container_width=True
 )
 
-st.sidebar.markdown("## CARE Predict")
+st.sidebar.markdown("# CARE Predict")
 
 st.sidebar.caption(
     "Clinical Assessment and Risk Evaluation Predict"
@@ -113,7 +289,7 @@ page = st.sidebar.radio(
 
 st.sidebar.markdown("---")
 
-st.sidebar.caption("Version 3.1")
+st.sidebar.caption("Version 4.0")
 
 st.sidebar.caption("Graduate Internship Capstone")
 
@@ -126,15 +302,15 @@ st.sidebar.caption("Developed for Your Health")
 if page == "Home":
 
     st.markdown(f"""
-    <div class="hero">
+    <div class="hero-card">
 
     <h1>CARE Predict</h1>
 
     <h3>Clinical Assessment and Risk Evaluation Predict</h3>
 
     <p>
-    Supporting earlier intervention through
-    Remote Patient Monitoring.
+    Supporting earlier intervention through standardized
+    Remote Patient Monitoring assessments.
     </p>
 
     </div>
@@ -145,21 +321,36 @@ if page == "Home":
     col1, col2, col3 = st.columns(3)
 
     with col1:
+
         st.metric(
             "Assessment Time",
             "2–3 Minutes"
         )
 
+        st.caption(
+            "Daily patient assessment"
+        )
+
     with col2:
+
         st.metric(
-            "Questions",
-            "11"
+            "Conditions",
+            "3"
+        )
+
+        st.caption(
+            "COPD • CHF • Diabetes"
         )
 
     with col3:
+
         st.metric(
             "Recommendation",
-            "Green | Yellow | Red"
+            "3 Levels"
+        )
+
+        st.caption(
+            "Stable • Follow-Up • Immediate Care"
         )
 
     st.write("")
@@ -169,35 +360,53 @@ if page == "Home":
         st.subheader("How CARE Predict Works")
 
         st.write("""
-1. Complete the Daily Assessment.
+**Step 1**
 
-2. CARE Predict evaluates your responses.
+Complete today's Daily Assessment.
 
-3. A recommendation is generated.
+---
 
-4. Follow the recommended next steps.
+**Step 2**
+
+CARE Predict evaluates your responses.
+
+---
+
+**Step 3**
+
+A recommendation is generated immediately after submission.
+
+---
+
+**Step 4**
+
+Follow the recommended next steps.
 """)
 
     st.info(
         "Select **Daily Assessment** from the navigation menu to begin."
     )
-
-# ==========================================================
-# DAILY ASSESSMENT
-# ==========================================================
-# ==========================================================
+    # ==========================================================
 # DAILY ASSESSMENT
 # ==========================================================
 
 elif page == "Daily Assessment":
 
-    st.title("Daily Remote Patient Monitoring Assessment")
+    st.markdown("""
+    <div class="hero-card">
 
-    st.write(
-        "Please complete today's assessment. CARE Predict will analyze your responses and generate a recommendation."
-    )
+    <h2>Daily Remote Patient Monitoring Assessment</h2>
 
-    st.divider()
+    <p>
+    Please complete today's assessment.
+    CARE Predict will evaluate your responses
+    and generate a recommendation.
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.write("")
 
     # ------------------------------------------------------
     # PATIENT INFORMATION
@@ -221,7 +430,7 @@ elif page == "Daily Assessment":
                 "Primary Chronic Condition",
                 [
                     "COPD",
-                    "CHF",
+                    "Congestive Heart Failure (CHF)",
                     "Diabetes"
                 ]
             )
@@ -293,10 +502,9 @@ elif page == "Daily Assessment":
         )
 
     st.write("")
-
-    # ------------------------------------------------------
+        # =====================================================
     # CONDITION-SPECIFIC ASSESSMENT
-    # ------------------------------------------------------
+    # =====================================================
 
     with st.container(border=True):
 
@@ -307,6 +515,10 @@ elif page == "Daily Assessment":
         )
 
         disease_answers = []
+
+        # --------------------------------------------------
+        # COPD
+        # --------------------------------------------------
 
         if condition == "COPD":
 
@@ -322,10 +534,14 @@ elif page == "Daily Assessment":
             if st.checkbox("My mucus has changed color"):
                 disease_answers.append("Mucus Change")
 
-            if st.checkbox("Trouble doing my normal daily activities"):
+            if st.checkbox("Trouble completing my normal daily activities"):
                 disease_answers.append("Activity Limitation")
 
-        elif condition == "CHF":
+        # --------------------------------------------------
+        # CHF
+        # --------------------------------------------------
+
+        elif condition == "Congestive Heart Failure (CHF)":
 
             if st.checkbox("More swelling in my feet or legs"):
                 disease_answers.append("Swelling")
@@ -341,6 +557,10 @@ elif page == "Daily Assessment":
 
             if st.checkbox("More tired than usual"):
                 disease_answers.append("Fatigue")
+
+        # --------------------------------------------------
+        # DIABETES
+        # --------------------------------------------------
 
         elif condition == "Diabetes":
 
@@ -364,9 +584,7 @@ elif page == "Daily Assessment":
                 index=None
             )
 
-            st.write(
-                "**Have you experienced any of the following today? (Select all that apply)**"
-            )
+            st.write("**Have you experienced any of the following today?**")
 
             if st.checkbox("Blurred vision"):
                 disease_answers.append("Blurred Vision")
@@ -388,6 +606,10 @@ elif page == "Daily Assessment":
 
     st.write("")
 
+    # =====================================================
+    # SUBMIT
+    # =====================================================
+
     submitted = st.button(
         "Submit Daily Assessment",
         use_container_width=True
@@ -406,342 +628,367 @@ elif page == "Daily Assessment":
         st.session_state.results = {
 
             "patient": patient,
+
             "condition": condition,
+
             "feeling": feeling,
+
             "symptoms": symptoms,
+
             "events": events,
+
             "medication": medication,
+
             "eating": eating,
+
             "contact": contact,
+
             "disease": disease_answers
 
         }
-        # ==========================================================
-# CARE PREDICT RECOMMENDATION ENGINE
-# ==========================================================
-
-if st.session_state.submitted:
-
-    data = st.session_state.results
-
-    score = 0
-
-    reasons = []
-
-    # ------------------------------------------------------
-    # GENERAL HEALTH SCORING
-    # ------------------------------------------------------
-
-    if data["feeling"] == "A Little Worse":
-
-        score += 2
-
-        reasons.append("You reported feeling a little worse today.")
-
-    elif data["feeling"] == "Much Worse":
-
-        score += 4
-
-        reasons.append("You reported feeling much worse today.")
-
-    # ------------------------------------------------------
-    # GENERAL SYMPTOMS
-    # ------------------------------------------------------
-
-    if "Dizziness or confusion" in data["symptoms"]:
-
-        score += 2
-
-        reasons.append("Dizziness or confusion reported.")
-
-    if "Fever or chills" in data["symptoms"]:
-
-        score += 2
-
-        reasons.append("Fever or chills reported.")
-
-    if "New or worsening pain" in data["symptoms"]:
-
-        score += 1
-
-        reasons.append("New or worsening pain reported.")
-
-    # ------------------------------------------------------
-    # EVENTS
-    # ------------------------------------------------------
-
-    if "Fall or injury" in data["events"]:
-
-        score += 3
-
-        reasons.append("Recent fall or injury.")
-
-    if "Emergency Room or Urgent Care visit" in data["events"]:
-
-        score += 5
-
-        reasons.append("Recent Emergency Room or Urgent Care visit.")
-
-    if "New symptom that concerns you" in data["events"]:
-
-        score += 2
-
-        reasons.append("A new concerning symptom was reported.")
-
-    # ------------------------------------------------------
-    # MEDICATION
-    # ------------------------------------------------------
-
-    if data["medication"] == "No":
-
-        score += 2
-
-        reasons.append("You did not take your medications today.")
-
-    # ------------------------------------------------------
-    # EATING / DRINKING
-    # ------------------------------------------------------
-
-    if data["eating"] == "No":
-
-        score += 2
-
-        reasons.append("You were unable to eat or drink normally today.")
-
-    # ------------------------------------------------------
-    # DISEASE-SPECIFIC SCORING
-    # ------------------------------------------------------
-
-    for symptom in data["disease"]:
-
-        if symptom in [
-
-            "Trouble Breathing",
-
-            "Shortness of Breath",
-
-            "Blood Sugar Below 70",
-
-            "Blood Sugar Above 250",
-
-            "Low Blood Sugar Symptoms"
-
-        ]:
-
-            score += 3
-
-        else:
-
-            score += 1
-
-        reasons.append(symptom)
-
-    # ------------------------------------------------------
-    # DETERMINE STATUS
-    # ------------------------------------------------------
-
-    if score <= 4:
-
-        status = "STABLE"
-
-        color = "#2E7D32"
-
-        recommendation = (
-            "Based on today's assessment, no immediate concerns were identified."
-        )
-
-    elif score <= 9:
-
-        status = "FOLLOW-UP RECOMMENDED"
-
-        color = "#F9A825"
-
-        recommendation = (
-            "Some responses indicate that follow-up with your care team may be appropriate."
-        )
-
-    else:
-
-        status = "IMMEDIATE CARE RECOMMENDED"
-
-        color = "#C62828"
-
-        recommendation = (
-            "Your responses indicate that immediate follow-up is recommended."
-        )
-
-    # ======================================================
-    # ASSESSMENT SUMMARY
-    # ======================================================
-
-    st.divider()
-
-    st.subheader("Assessment Summary")
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-
-        st.write("**Patient Name**")
-
-        if data["patient"]:
-
-            st.write(data["patient"])
-
-        else:
-
-            st.write("Not Provided")
-
-        st.write("**Primary Condition**")
-
-        st.write(data["condition"])
-
-    with col2:
-
-        st.write("**Assessment Date**")
-
-        st.write(datetime.now().strftime("%B %d, %Y"))
-
-        st.write("**Assessment Time**")
-
-        st.write(datetime.now().strftime("%I:%M %p"))
-            # ======================================================
-    # CARE PREDICT RECOMMENDATION
-    # ======================================================
-
-    st.divider()
-
-    st.markdown(f"""
-    <div style="
-        background:{color};
-        color:white;
-        padding:30px;
-        border-radius:15px;
-        text-align:center;
-    ">
-
-    <h2>CARE Predict Recommendation</h2>
-
-    <h1>{status}</h1>
-
-    <p style="font-size:18px;">
-        {recommendation}
-    </p>
-
-    </div>
-    """, unsafe_allow_html=True)
+    st.success("Assessment submitted successfully.")
 
     st.write("")
 
-    st.metric(
-        "CARE Predict Risk Score",
-        score
+    st.caption(
+        "Your recommendation will appear below."
     )
+        # =====================================================
+    # CARE PREDICT RECOMMENDATION ENGINE
+    # =====================================================
 
-    # ======================================================
-    # WHY THIS RECOMMENDATION
-    # ======================================================
+    if st.session_state.submitted:
 
-    st.divider()
+        data = st.session_state.results
 
-    st.subheader("Why did I receive this recommendation?")
+        score = 0
 
-    if reasons:
+        reasons = []
 
-        for reason in reasons:
+        # --------------------------------------------------
+        # AUTOMATIC FOLLOW-UP RULE
+        # --------------------------------------------------
 
-            st.write(f"• {reason}")
+        concerning_response = False
 
-    else:
+        # Feeling worse
+        if data["feeling"] in ["A Little Worse", "Much Worse"]:
+            concerning_response = True
 
-        st.success(
-            "No concerning symptoms were identified during today's assessment."
-        )
+        # General symptoms
+        if len(data["symptoms"]) > 0:
+            concerning_response = True
 
-    # ======================================================
-    # NEXT STEPS
-    # ======================================================
+        # Recent events
+        if len(data["events"]) > 0:
+            concerning_response = True
 
-    st.divider()
+        # Medication
+        if data["medication"] == "No":
+            concerning_response = True
 
-    st.subheader("Recommended Next Steps")
+        # Eating / Drinking
+        if data["eating"] == "No":
+            concerning_response = True
 
-    if status == "STABLE":
+        # Disease-specific symptoms
+        if len(data["disease"]) > 0:
+            concerning_response = True
+                # --------------------------------------------------
+        # GENERAL HEALTH SCORING
+        # --------------------------------------------------
 
-        st.success(
-            "Continue taking your medications as prescribed."
-        )
+        if data["feeling"] == "A Little Worse":
 
-        st.success(
-            "Continue monitoring your health and complete another assessment tomorrow."
-        )
+            score += 2
 
-        st.success(
-            "If you develop new or worsening symptoms, contact your healthcare provider."
-        )
+            reasons.append("You reported feeling a little worse today.")
 
-    elif status == "FOLLOW-UP RECOMMENDED":
+        elif data["feeling"] == "Much Worse":
 
-        st.warning(
-            "Continue monitoring your symptoms."
-        )
+            score += 4
 
-        st.warning(
-            "A member of your care team may contact you."
-        )
+            reasons.append("You reported feeling much worse today.")
 
-        st.warning(
-            "If your symptoms worsen before you are contacted, contact your healthcare provider."
-        )
+        # --------------------------------------------------
+        # GENERAL SYMPTOMS
+        # --------------------------------------------------
 
-    else:
+        if "Dizziness or confusion" in data["symptoms"]:
 
-        st.error(
-            "Contact the Your Health Care Team Triage Line."
-        )
+            score += 2
 
-        st.error(
-            "Call 1-800-491-0909"
-        )
+            reasons.append("Dizziness or confusion reported.")
 
-        st.error(
-            "Press 9"
-        )
+        if "Fever or chills" in data["symptoms"]:
 
-        st.error(
-            "If this is a life-threatening emergency, call 911 immediately."
-        )
+            score += 2
 
-    # ======================================================
-    # PATIENT REQUESTED CONTACT
-    # ======================================================
+            reasons.append("Fever or chills reported.")
 
-    if data["contact"] == "Yes":
+        if "New or worsening pain" in data["symptoms"]:
 
-        st.info(
-            "You requested that a member of your care team contact you today."
-        )
+            score += 1
 
-    # ======================================================
-    # DISCLAIMER
-    # ======================================================
+            reasons.append("New or worsening pain reported.")
 
-    st.divider()
+        # --------------------------------------------------
+        # RECENT EVENTS
+        # --------------------------------------------------
 
-    st.info("""
+        if "Fall or injury" in data["events"]:
+
+            score += 3
+
+            reasons.append("Recent fall or injury.")
+
+        if "Emergency Room or Urgent Care visit" in data["events"]:
+
+            score += 5
+
+            reasons.append("Recent Emergency Room or Urgent Care visit.")
+
+        if "New symptom that concerns you" in data["events"]:
+
+            score += 2
+
+            reasons.append("A new concerning symptom was reported.")
+
+        # --------------------------------------------------
+        # MEDICATION
+        # --------------------------------------------------
+
+        if data["medication"] == "No":
+
+            score += 2
+
+            reasons.append("You reported not taking your medications today.")
+
+        # --------------------------------------------------
+        # EATING / DRINKING
+        # --------------------------------------------------
+
+        if data["eating"] == "No":
+
+            score += 2
+
+            reasons.append("You reported being unable to eat or drink normally.")
+                # --------------------------------------------------
+        # DISEASE-SPECIFIC SCORING
+        # --------------------------------------------------
+
+        for symptom in data["disease"]:
+
+            if symptom in [
+
+                "Trouble Breathing",
+                "Shortness of Breath",
+                "Blood Sugar Below 70",
+                "Blood Sugar Above 250",
+                "Low Blood Sugar Symptoms"
+
+            ]:
+
+                score += 3
+
+            else:
+
+                score += 1
+
+            reasons.append(symptom)
+
+        # --------------------------------------------------
+        # DETERMINE RECOMMENDATION
+        # --------------------------------------------------
+
+        if score >= 10:
+
+            status = "IMMEDIATE CARE RECOMMENDED"
+
+            color = RED
+
+            recommendation = (
+                "Your assessment indicates that immediate follow-up is recommended."
+            )
+
+        elif concerning_response or score > 0:
+
+            status = "FOLLOW-UP RECOMMENDED"
+
+            color = YELLOW
+
+            recommendation = (
+                "Your assessment indicates that follow-up with your care team is recommended."
+            )
+
+        else:
+
+            status = "STABLE"
+
+            color = GREEN
+
+            recommendation = (
+                "No immediate concerns were identified during today's assessment."
+            )
+                    # =====================================================
+        # ASSESSMENT SUMMARY
+        # =====================================================
+
+        st.divider()
+
+        st.subheader("Assessment Summary")
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+
+            st.markdown("**Patient Name**")
+
+            if data["patient"]:
+                st.write(data["patient"])
+            else:
+                st.write("Not Provided")
+
+            st.markdown("**Primary Condition**")
+
+            st.write(data["condition"])
+
+        with col2:
+
+            st.markdown("**Assessment Date**")
+
+            st.write(
+                LOCAL_TIME.strftime("%B %d, %Y")
+            )
+
+            st.markdown("**Assessment Time**")
+
+            st.write(
+                LOCAL_TIME.strftime("%I:%M %p")
+            )
+
+        st.write("")
+
+        with st.container(border=True):
+
+            st.subheader("Assessment Results")
+
+            st.metric(
+                "CARE Predict Risk Score",
+                score
+            )
+
+            st.markdown("**Recommendation**")
+
+            st.markdown(
+                f"<h3 style='color:{color};'>{status}</h3>",
+                unsafe_allow_html=True
+            )
+
+            st.write(recommendation)
+
+        st.write("")
+                # =====================================================
+        # WHY THIS RECOMMENDATION
+        # =====================================================
+
+        st.subheader("Why did I receive this recommendation?")
+
+        if reasons:
+
+            for reason in reasons:
+
+                st.write(f"• {reason}")
+
+        else:
+
+            st.success(
+                "No concerning symptoms or responses were identified during today's assessment."
+            )
+
+        st.write("")
+
+        # =====================================================
+        # RECOMMENDED NEXT STEPS
+        # =====================================================
+
+        st.subheader("Recommended Next Steps")
+
+        if status == "STABLE":
+
+            st.success(
+                "Continue taking your medications as prescribed."
+            )
+
+            st.success(
+                "Continue monitoring your health and complete another assessment tomorrow."
+            )
+
+            st.success(
+                "If you develop new or worsening symptoms, contact your healthcare provider."
+            )
+
+        elif status == "FOLLOW-UP RECOMMENDED":
+
+            st.warning(
+                "Continue monitoring your symptoms closely."
+            )
+
+            st.warning(
+                "A member of your care team may contact you."
+            )
+
+            st.warning(
+                "If your symptoms worsen before you are contacted, contact your healthcare provider."
+            )
+
+        else:
+
+            st.error(
+                "Contact the Your Health Care Team Triage Line immediately."
+            )
+
+            st.error(
+                "Call: 1-800-491-0909"
+            )
+
+            st.error(
+                "Press 9"
+            )
+
+            st.error(
+                "If this is a life-threatening emergency, call 911 immediately."
+            )
+
+        # =====================================================
+        # CARE TEAM CONTACT REQUEST
+        # =====================================================
+
+        if data["contact"] == "Yes":
+
+            st.info(
+                "You requested that a member of your care team contact you today."
+            )
+
+        # =====================================================
+        # CLINICAL DISCLAIMER
+        # =====================================================
+
+        st.divider()
+
+        st.info("""
 **Clinical Disclaimer**
 
 CARE Predict is a clinical decision support prototype developed for Your Health as part of a graduate internship capstone project.
 
-This application is intended to support Remote Patient Monitoring by helping identify patients who may benefit from earlier follow-up.
+This application is intended to support Remote Patient Monitoring (RPM) by helping identify patients who may benefit from earlier follow-up.
 
-CARE Predict does **not** diagnose medical conditions or replace the clinical judgment of licensed healthcare professionals.
+CARE Predict does not diagnose medical conditions and should not replace the clinical judgment of licensed healthcare professionals.
 
 If you believe you are experiencing a life-threatening emergency, call **911 immediately**.
 """)
-
-# ==========================================================
-# ABOUT
+        # ==========================================================
+# ABOUT PAGE
 # ==========================================================
 
 elif page == "About":
@@ -753,49 +1000,59 @@ elif page == "About":
         st.subheader("Clinical Assessment and Risk Evaluation Predict")
 
         st.write("""
-CARE Predict is a clinical decision support prototype developed for **Your Health**
-as part of a graduate internship capstone project.
+CARE Predict is a clinical decision support prototype developed for **Your Health** as part of a graduate internship capstone project.
 
-The application was designed to support **Remote Patient Monitoring (RPM)**
-by providing a standardized daily assessment for patients with chronic
-conditions including:
+The application was created to support **Remote Patient Monitoring (RPM)** by helping identify patients who may benefit from earlier follow-up based on standardized daily assessments.
+
+CARE Predict currently supports patients with:
 
 • Chronic Obstructive Pulmonary Disease (COPD)
 
 • Congestive Heart Failure (CHF)
 
 • Diabetes
-
-Based on patient responses, CARE Predict generates one of three
-recommendations:
-
-• Stable
-
-• Follow-Up Recommended
-
-• Immediate Care Recommended
-
-The goal of the application is to encourage earlier intervention,
-improve communication between patients and care teams, and support
-clinical decision-making.
 """)
 
     st.write("")
 
     with st.container(border=True):
 
-        st.subheader("Clinical Workflow")
+        st.subheader("How CARE Predict Works")
 
         st.write("""
-1. Patient completes the Daily Assessment.
+1. Complete the Daily Assessment.
 
 2. CARE Predict evaluates patient responses.
 
-3. A recommendation is generated.
+3. A clinical recommendation is generated.
 
-4. The patient follows the recommended next steps.
+4. Patients follow the recommended next steps.
 
-5. When appropriate, the care team follows up with the patient.
+5. Care teams can intervene earlier when appropriate.
+""")
+
+    st.write("")
+
+    with st.container(border=True):
+
+        st.subheader("CARE Predict Recommendations")
+
+        st.write("""
+**Stable**
+
+No immediate concerns identified.
+
+---
+
+**Follow-Up Recommended**
+
+One or more responses suggest that follow-up with the care team is appropriate.
+
+---
+
+**Immediate Care Recommended**
+
+High-risk responses indicate that immediate follow-up is recommended.
 """)
 
     st.write("")
@@ -809,15 +1066,15 @@ clinical decision-making.
 
 • Artificial Intelligence Risk Prediction
 
+• Secure Patient Login
+
 • Provider Dashboard
 
 • Population Health Analytics
 
-• Secure Patient Login
-
-• Automated RPM Alerts
-
 • Mobile Application
+
+• Automated Remote Patient Monitoring Alerts
 """)
 
     st.write("")
@@ -832,6 +1089,15 @@ CARE Predict is intended to support—not replace—the clinical judgment of lic
 
 st.markdown("---")
 
-st.caption(
-    f"CARE Predict Version 3.1 | Developed for Your Health | {datetime.now().strftime('%B %d, %Y')}"
+st.markdown(
+    """
+<div class="footer">
+
+CARE Predict Version 4.0 • Graduate Internship Capstone
+
+Developed for Your Health
+
+</div>
+""",
+unsafe_allow_html=True
 )
